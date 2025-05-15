@@ -1,0 +1,16 @@
+{
+  "name": "horizen-migration-test-address-gen",
+  "version": "1.0.0",
+  "scripts": {
+    "gen-test-addresses": "./gen-test-addresses.js 30 5 true"
+  },
+  "author": "The Horizen Foundation",
+  "license": "MIT",
+  "dependencies": {
+    "bip32": "2.0.6",
+    "bip39": "2.6.0",
+    "bs58check": "2.1.2",
+    "ethers": "6.14.0",
+    "zencashjs": "2.2.0"
+  }
+}
