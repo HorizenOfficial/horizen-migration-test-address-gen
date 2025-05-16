@@ -56,7 +56,12 @@ function deriveClaimDirectHorizenAddress(prefix, ethereumAddress) {
 }
 
 function deriveClaimDirectMultisigHorizenPubKey(ethereumAddress) {
-  return "02000000000000000000000000" + ethereumAddress.slice(2).toLowerCase();
+  return (
+    "02" +
+    createHash("sha256")
+      .update(Buffer.from(ethereumAddress.slice(2).toLowerCase(), "hex"))
+      .digest("hex")
+  );
 }
 
 function createClaimDirectMultisigRedeemScript(pubKey, derivedPubKey) {

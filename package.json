@@ -2,7 +2,7 @@
   "name": "horizen-migration-test-address-gen",
   "version": "1.0.0",
   "scripts": {
-    "gen-test-addresses": "./gen-test-addresses.js 30 5 true"
+    "gen-test-addresses": "./gen-test-addresses.js 30 5 true > horizen-migration-test-addresses.json"
   },
   "author": "The Horizen Foundation",
   "license": "MIT",
