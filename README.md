@@ -4,7 +4,7 @@ These scripts can be used to generate and fund Horizen 1 addresses that can be u
 
 Random seed phrases are generated from which Horizen 1 private keys, compressed and uncompressed addresses and public keys are derived. An Ethereum address and keys are derived from the same seed phrase.
 This address is then used to deterministically derive Horizen 1 address that can be used for the claimDirect and claimDirectMultisig smart contract methods.
-The claimDirectMultisig address is constructed from the `"pubKeyHorizenCompressed"` public/private key pair and the Ethereum address.
+One claimDirectMultisig address is constructed from the `"pubKeyHorizenCompressed"` public/private key pair and the Ethereum address, another from the `"pubKeyHorizenUncompressed"` public/private key pair and the Ethereum address.
 
 
 ##### Installation:
@@ -20,25 +20,27 @@ node ./gen-test-addresses.js 1 1 true
 [
   {
     "index": 0,
-    "mnemonicPhrase": "cereal bike alarm double require school picture gift evolve brother party improve hip melt minimum path pistol quantum foot harsh sea fantasy level reflect",
+    "mnemonicPhrase": "benefit collect spirit dash piano carpet actor addict meadow lucky antenna another beyond armed paper uncle essence reduce top steel fiction always uncover exclude",
     "network": "testnet",
     "data": [
       {
         "derivationPathHorizen": "m/44'/121'/0'/0/0",
-        "rawPrivKeyHorizen": "7b3f2e4e17c93c7f1430c6bfcc41cbadbd95c3eff2cae75877043c59c7e8177b",
-        "WIFPrivKeyHorizenCompressed": "cRiH399SJ8qhh32Xz5DwiiWp87d2ddYvJtky55UkVP7JMzCTz5tt",
-        "WIFPrivKeyHorizenUncompressed": "92XCLWwUUu5EkWTdURyQGo7JUSWuw4kUwMLUf5e6mwrTbFL4YJB",
-        "pubKeyHorizenCompressed": "0385f10f8108446157ae0feb7ffdf3ac5baef68da203f800aa5f065cd324e7d87c",
-        "pubKeyHorizenUncompressed": "0485f10f8108446157ae0feb7ffdf3ac5baef68da203f800aa5f065cd324e7d87c4580e0322eb0eb530ee11652f6cd394c22fa818b79dbe8dce3bd5fb3dd5596d9",
-        "addressHorizenCompressed": "ztdNgNH1VFJrEVxcxmSNNfAnBSkozVYkKW5",
-        "addressHorizenUncompressed": "ztqfZ8fDp1ug2hfUCiWreU9GtEcQbupqa9N",
+        "rawPrivKeyHorizen": "a4d087bcccf05814d351685a9014cddb3f69ba8e23bebc4b5a3a0844cd58edd4",
+        "WIFPrivKeyHorizenCompressed": "cT75a8P8dakWtb5hL9FRTn16MCQaKb6cbheL1QyoyJBm48AH4Xx2",
+        "WIFPrivKeyHorizenUncompressed": "92qW8WK9ymoZboEkaLYMx1EANLoaNtE45h2D1YiREfLCo2hf9kW",
+        "pubKeyHorizenCompressed": "02d2c2e43aacf35dffa3e996c0fc1f8b79fc2e05ceb832995d91c51f97e6dc186d",
+        "pubKeyHorizenUncompressed": "04d2c2e43aacf35dffa3e996c0fc1f8b79fc2e05ceb832995d91c51f97e6dc186db43e4ce3dbb2fc7daa6472b16cc2c595a3680f05d8856d88228bccdcfcc6e928",
+        "addressHorizenCompressed": "zto4TMMRx2ThkWFHkPYnn13dc3s2rMApZbk",
+        "addressHorizenUncompressed": "ztaYC1bovPsyAQbWKBXDn8GLez7ZYWzaKWn",
         "derivationPathEthereum": "m/44'/60'/0'/0/0",
-        "privKeyEthereum": "0x3ed205699b2de0a6be9ad44e94d00f56774ae4162a09cef12a2c3f39354f686e",
-        "pubKeyEthereum": "0x02b6abeca71876148b8499455133ab4cf90066e95079b8701a640968112d0b423d",
-        "addressEthereum": "0xe997A621c4DE1aC888B80bED16CcDdD5FeC8852c",
-        "claimDirectEhereumDerivedAddress": "ztWTUiKdiioiWHarMecpGExmfTjDLnCFk2c",
-        "claimDirectMultisigEthereumDerivedRedeemScript": "51210385f10f8108446157ae0feb7ffdf3ac5baef68da203f800aa5f065cd324e7d87c210263bfb621d559e4d30599a4926d15aa26d37e91a0bbeb602c2127d34e5c09474152ae",
-        "claimDirectMultisigEthereumDerivedAddress": "zrH9asDuZNswHHaXSwNwy2FffKUFpJM3C9N"
+        "privKeyEthereum": "0x3ac4c41dab7ce92a2b46cfb4c3819157f5c3f2387dcc37e0f59abdbbc1451798",
+        "pubKeyEthereum": "0x03ff3008a5f4f476254160a4f9cf950652c4501d03cdabb904712a2d0dbdfecdaf",
+        "addressEthereum": "0x75A8Fd44C47228312268B01351dd6276bBad6d2B",
+        "claimDirectEhereumDerivedAddress": "ztVeGzgygF3m7nVVk1M9CxfiMLpVHVoc1NN",
+        "claimDirectMultisigEthereumDerivedRedeemScriptCompressed": "512102d2c2e43aacf35dffa3e996c0fc1f8b79fc2e05ceb832995d91c51f97e6dc186d21025f2b5ced64fb29e3c47d874a5c34e6b8766e7c2bced01d69683b53b06dd4f78952ae",
+        "claimDirectMultisigEthereumDerivedAddressCompressed": "zrPPnkXNfioKFRyho4KMNEdpFVP9YX5UPkL",
+        "claimDirectMultisigEthereumDerivedRedeemScriptUncompressed": "514104d2c2e43aacf35dffa3e996c0fc1f8b79fc2e05ceb832995d91c51f97e6dc186db43e4ce3dbb2fc7daa6472b16cc2c595a3680f05d8856d88228bccdcfcc6e92821025f2b5ced64fb29e3c47d874a5c34e6b8766e7c2bced01d69683b53b06dd4f78952ae",
+        "claimDirectMultisigEthereumDerivedAddressUncompressed": "zrR9f3wGTYj1oet5n8ejByEVev6VJEUoRa1"
       }
     ]
   }

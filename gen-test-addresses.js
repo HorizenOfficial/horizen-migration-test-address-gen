@@ -139,7 +139,9 @@ for (let j = 0; j < numSeeds; ++j) {
     );
     // Ethereum Addresses
     let derivationPathEthereum = derivationPrefixEthereum + "/" + i;
-    let hdNodeEthereumDerived = hdNodeEthereum.derivePath(derivationPathEthereum);
+    let hdNodeEthereumDerived = hdNodeEthereum.derivePath(
+      derivationPathEthereum,
+    );
     let privKeyEthereum = hdNodeEthereumDerived.privateKey;
     let pubKeyEthereum = hdNodeEthereumDerived.publicKey;
     let addressEthereum = hdNodeEthereumDerived.address;
@@ -149,14 +151,26 @@ for (let j = 0; j < numSeeds; ++j) {
       addressEthereum,
     );
     // claimDirectMultisig derived Addresses
-    let claimDirectMultisigEthereumDerivedRedeemScript =
+    // create multisig with compressed pubkey of Horizen 1 address and Etherum address derived compressed pubkey
+    let claimDirectMultisigEthereumDerivedRedeemScriptCompressed =
       createClaimDirectMultisigRedeemScript(
         pubKeyHorizenCompressed,
         deriveClaimDirectMultisigHorizenPubKey(addressEthereum),
       );
-    let claimDirectMultisigEthereumDerivedAddress =
+    let claimDirectMultisigEthereumDerivedAddressCompressed =
       zencashjs.address.multiSigRSToAddress(
-        claimDirectMultisigEthereumDerivedRedeemScript,
+        claimDirectMultisigEthereumDerivedRedeemScriptCompressed,
+        scriptHash,
+      );
+    // create multisig with uncompressed pubkey of Horizen 1 address and Etherum address derived compressed pubkey
+    let claimDirectMultisigEthereumDerivedRedeemScriptUncompressed =
+      createClaimDirectMultisigRedeemScript(
+        pubKeyHorizenUncompressed,
+        deriveClaimDirectMultisigHorizenPubKey(addressEthereum),
+      );
+    let claimDirectMultisigEthereumDerivedAddressUncompressed =
+      zencashjs.address.multiSigRSToAddress(
+        claimDirectMultisigEthereumDerivedRedeemScriptUncompressed,
         scriptHash,
       );
     data.push({
@@ -173,10 +187,14 @@ for (let j = 0; j < numSeeds; ++j) {
       pubKeyEthereum: pubKeyEthereum,
       addressEthereum: addressEthereum,
       claimDirectEhereumDerivedAddress: claimDirectEhereumDerivedAddress,
-      claimDirectMultisigEthereumDerivedRedeemScript:
-        claimDirectMultisigEthereumDerivedRedeemScript,
-      claimDirectMultisigEthereumDerivedAddress:
-        claimDirectMultisigEthereumDerivedAddress,
+      claimDirectMultisigEthereumDerivedRedeemScriptCompressed:
+        claimDirectMultisigEthereumDerivedRedeemScriptCompressed,
+      claimDirectMultisigEthereumDerivedAddressCompressed:
+        claimDirectMultisigEthereumDerivedAddressCompressed,
+      claimDirectMultisigEthereumDerivedRedeemScriptUncompressed:
+        claimDirectMultisigEthereumDerivedRedeemScriptUncompressed,
+      claimDirectMultisigEthereumDerivedAddressUncompressed:
+        claimDirectMultisigEthereumDerivedAddressUncompressed,
     });
   }
   results.push({
