@@ -14,7 +14,7 @@ object=""
 objects=()
 for i in "${!addresses[@]}"; do
   object+="{\"address\":\"${addresses[i]}\",\"amount\":${amount}},"
-  if ! (( (( i + 1 )) % batch_size )); then
+  if ! (( ( i + 1 ) % batch_size )); then
     object="${object::-1}"
     objects+=("${object}")
     object=""

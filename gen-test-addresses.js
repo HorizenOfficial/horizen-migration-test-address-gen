@@ -8,7 +8,7 @@ const ethers = require("ethers");
 const createHash = require("create-hash");
 const bs58check = require("bs58check");
 
-if (process.argv.length < 3) {
+if (process.argv.length < 4) {
   console.error(
     `Usage: ${path.basename(process.argv[0])} ${path.basename(process.argv[1])} numSeeds(int) numAddresses(int) testnet(optional, true || false, default false)`,
   );
@@ -17,7 +17,7 @@ if (process.argv.length < 3) {
 
 const numSeeds = process.argv[2];
 const numAddresses = process.argv[3];
-const testnet = process.argv[4] === "true" ? true : false;
+const testnet = process.argv[4] === "true";
 
 const bip32Network = {
   mainnet: {
@@ -37,16 +37,38 @@ const bip32Network = {
 };
 const derivationPrefixHorizen = "m/44'/121'/0'/0";
 const derivationPrefixEthereum = "m/44'/60'/0'/0";
+const wif = testnet
+  ? zencashjs.config.testnet.wif
+  : zencashjs.config.mainnet.wif;
+const pubKeyHash = testnet
+  ? zencashjs.config.testnet.pubKeyHash
+  : zencashjs.config.mainnet.pubKeyHash;
+const scriptHash = testnet
+  ? zencashjs.config.testnet.scriptHash
+  : zencashjs.config.mainnet.scriptHash;
+
+function ethAddressToHexString(ethereumAddress) {
+  let validEthAddress;
+  try {
+    validEthAddress = ethers.getAddress(ethereumAddress);
+  } catch (error) {
+    console.error(
+      "Error: ethAddressToHexString() invalid Etherum Address passed.",
+    );
+    process.exit(1);
+  }
+  return validEthAddress.slice(2);
+}
 
 function deriveClaimDirectHorizenAddress(prefix, ethereumAddress) {
-  const ethereumAddressBytes = ethereumAddress.slice(2);
+  const ethAddressHexString = ethAddressToHexString(ethereumAddress);
   return bs58check.encode(
     Buffer.from(
       prefix +
         createHash("rmd160")
           .update(
             createHash("sha256")
-              .update(Buffer.from(ethereumAddressBytes, "hex"))
+              .update(Buffer.from(ethAddressHexString, "hex"))
               .digest(),
           )
           .digest("hex"),
@@ -56,10 +78,12 @@ function deriveClaimDirectHorizenAddress(prefix, ethereumAddress) {
 }
 
 function deriveClaimDirectMultisigHorizenPubKey(ethereumAddress) {
+  const compressedPubKeyIdentifier = "02";
+  const ethAddressHexString = ethAddressToHexString(ethereumAddress);
   return (
-    "02" +
+    compressedPubKeyIdentifier +
     createHash("sha256")
-      .update(Buffer.from(ethereumAddress.slice(2).toLowerCase(), "hex"))
+      .update(Buffer.from(ethAddressHexString, "hex"))
       .digest("hex")
   );
 }
@@ -80,26 +104,22 @@ for (let j = 0; j < numSeeds; ++j) {
     seed,
     testnet ? bip32Network.testnet : bip32Network.mainnet,
   );
-  let hdNodeEthereum = ethers.HDNodeWallet.fromPhrase(
-    mnemonicPhrase,
-    "",
-    derivationPrefixEthereum,
-  );
+  let hdNodeEthereum = ethers.HDNodeWallet.fromSeed(seed);
   let data = [];
   for (let i = 0; i < numAddresses; ++i) {
     // Horizen Addresses
-    let derivationPathHorizen = derivationPrefixHorizen + "/" + i.toString();
+    let derivationPathHorizen = derivationPrefixHorizen + "/" + i;
     let hdNodeHorizenDerived = hdNodeHorizen.derivePath(derivationPathHorizen);
     let rawPrivKeyHorizen = hdNodeHorizenDerived.privateKey.toString("hex");
     let WIFPrivKeyHorizenCompressed = zencashjs.address.privKeyToWIF(
       rawPrivKeyHorizen,
       true,
-      testnet ? zencashjs.config.testnet.wif : zencashjs.config.mainnet.wif,
+      wif,
     );
     let WIFPrivKeyHorizenUncompressed = zencashjs.address.privKeyToWIF(
       rawPrivKeyHorizen,
       false,
-      testnet ? zencashjs.config.testnet.wif : zencashjs.config.mainnet.wif,
+      wif,
     );
     let pubKeyHorizenCompressed = zencashjs.address.privKeyToPubKey(
       rawPrivKeyHorizen,
@@ -111,27 +131,21 @@ for (let j = 0; j < numSeeds; ++j) {
     );
     let addressHorizenCompressed = zencashjs.address.pubKeyToAddr(
       pubKeyHorizenCompressed,
-      testnet
-        ? zencashjs.config.testnet.pubKeyHash
-        : zencashjs.config.mainnet.pubKeyHash,
+      pubKeyHash,
     );
     let addressHorizenUncompressed = zencashjs.address.pubKeyToAddr(
       pubKeyHorizenUncompressed,
-      testnet
-        ? zencashjs.config.testnet.pubKeyHash
-        : zencashjs.config.mainnet.pubKeyHash,
+      pubKeyHash,
     );
     // Ethereum Addresses
-    let derivationPathEthereum = derivationPrefixEthereum + "/" + i.toString();
-    let hdNodeEthereumChild = hdNodeEthereum.deriveChild(i);
-    let privKeyEthereum = hdNodeEthereumChild.privateKey;
-    let pubKeyEthereum = hdNodeEthereumChild.publicKey;
-    let addressEthereum = hdNodeEthereumChild.address;
+    let derivationPathEthereum = derivationPrefixEthereum + "/" + i;
+    let hdNodeEthereumDerived = hdNodeEthereum.derivePath(derivationPathEthereum);
+    let privKeyEthereum = hdNodeEthereumDerived.privateKey;
+    let pubKeyEthereum = hdNodeEthereumDerived.publicKey;
+    let addressEthereum = hdNodeEthereumDerived.address;
     // claimDirect derived Addresses
     let claimDirectEhereumDerivedAddress = deriveClaimDirectHorizenAddress(
-      testnet
-        ? zencashjs.config.testnet.pubKeyHash
-        : zencashjs.config.mainnet.pubKeyHash,
+      pubKeyHash,
       addressEthereum,
     );
     // claimDirectMultisig derived Addresses
@@ -143,9 +157,7 @@ for (let j = 0; j < numSeeds; ++j) {
     let claimDirectMultisigEthereumDerivedAddress =
       zencashjs.address.multiSigRSToAddress(
         claimDirectMultisigEthereumDerivedRedeemScript,
-        testnet
-          ? zencashjs.config.testnet.scriptHash
-          : zencashjs.config.mainnet.scriptHash,
+        scriptHash,
       );
     data.push({
       derivationPathHorizen: derivationPathHorizen,
